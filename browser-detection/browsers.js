@@ -20,4 +20,6 @@ export const ELECTRON = 'electron';
 
 export const REACT_NATIVE = 'react-native';
 
+export const NATIVE_SCRIPT = 'native-script';
+
 export const UNKNOWN = 'unknown';
