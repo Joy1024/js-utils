@@ -25,7 +25,8 @@ const bowserNameToJitsiName = {
     'Firefox': FIREFOX,
     'Internet Explorer': INTERNET_EXPLORER,
     'Microsoft Edge': EDGE,
-    'Safari': SAFARI
+    'Safari': SAFARI,
+    "Native Script": NATIVE_SCRIPT,
 };
 
 /**
@@ -118,6 +119,35 @@ function _detectReactNative() {
 }
 
 /**
+ * Detects  Native Script environment.
+ * @returns {Object|undefined} - The name (REACT_NATIVE) and version.
+ */
+function _detectNativeScript() {
+    const match = navigator.userAgent.match(/\b(native-script)(?:\/(\S+))?/i);
+    let version;
+
+    // If we're remote debugging a React Native app, it may be treated as
+    // Chrome. Check navigator.product as well and always return some version
+    // even if we can't get the real one.
+
+    if (match || navigator.product === 'NativeScript') {
+        let name;
+
+        if (match && match.length > 2) {
+            name = match[1];
+            version = match[2];
+        }
+        name || (name = 'native-script');
+        version || (version = 'unknown');
+
+        return {
+            name: NATIVE_SCRIPT,
+            version
+        };
+    }
+}
+
+/**
  * Returns information about the current browser.
  *
  * @returns {Object} - The name and version of the browser.
@@ -126,6 +156,7 @@ function _detect() {
     let browserInfo;
     const detectors = [
         _detectReactNative,
+        _detectNativeScript,
         _detectElectron,
         _detectNWJS
     ];
